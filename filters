@@ -1,0 +1,136 @@
+# ------------------- Sepia Filter ----------------------- 
+
+def sepiaFilter():
+  global picture, filepath, window
+  #setMediaPath()
+  jesPicture = makePicture(filepath)
+  #writePictureTo(jesPicture, getMediaPath() + 'sepia.jpg')
+  
+  for p in getPixels(jesPicture):
+    newRed = getRed(p) * 0.299
+    newGreen = getGreen(p) * 0.587
+    newBlue = getBlue(p) * 0.114
+    luminance = newRed+newGreen+newBlue
+    setColor(p,makeColor(luminance,luminance,luminance))
+  
+  for p in getPixels(jesPicture):
+    red = getRed(p)
+    blue = getBlue(p)
+    
+    #tint shadows
+    if (red <63):
+      red = red*1.4
+      blue = blue*.07
+    
+    #tint midtones
+    if (red > 62 and red < 192):
+      red = red*1.25
+      if (red > 255):
+        red = 255
+      blue = blue*0.8
+      
+    setBlue(p,blue)
+    setRed(p,red)
+  
+  shortenedFilepath = filepath[:len(filepath)-4]
+  writePictureTo(jesPicture, shortenedFilepath + 'sepia.jpg')
+  
+  window.remove(picture)
+  
+  width = 800
+  if picture.getHeight() > picture.getWidth():
+    width = 500
+    
+  picture = Icon(shortenedFilepath + 'sepia.jpg', width)
+  window.add(picture, window.getWidth()/3, 100)
+  
+  #explore(jesPicture)
+  #writePictureTo(jesPicture, filepath + 'sepia')
+  #return(picture)
+  
+  # Icon set pixels thing does not work... 
+  # look at jython image library, but it works the same way as jes image one,
+  # idk, he says it's not gonna help much
+  
+  
+
+# ------------------- Black & White Filter -----------------------
+
+def grayScale():
+  global window, filepath, picture
+
+  jesPicture = makePicture(filepath)
+
+  for p in getPixels(jesPicture):
+    newRed = getRed(p) * 0.299
+    newGreen = getGreen(p) * 0.587
+    newBlue = getBlue(p) * 0.114
+    luminance = newRed+newGreen+newBlue
+    setColor(p,makeColor(luminance,luminance,luminance))
+    
+  shortenedFilepath = filepath[:len(filepath)-4]
+  writePictureTo(jesPicture, shortenedFilepath + 'grayScale.jpg')
+  
+  window.remove(picture)
+  
+  width = 800
+  if picture.getHeight() > picture.getWidth():
+    width = 500
+    
+  picture = Icon(shortenedFilepath + 'grayScale.jpg', width)
+  window.add(picture, window.getWidth()/3, 100)
+
+# ------------------- Posterize Filter -----------------------
+
+def posterize():
+  global window, filepath, picture
+  
+  jesPicture = makePicture(filepath)
+  
+  for p in getPixels(jesPicture):
+    red = getRed(p)
+    blue = getBlue(p)
+    green = getGreen(p)
+    
+    # rewrite above if statements using elif and else
+    if red < 64:
+      setRed(p, 31)
+    elif red < 128:
+      setRed(p, 95)
+    elif red < 192:
+      setRed(p, 159)
+    else:
+      setRed(p, 223)
+
+    #check and set green values
+    if green < 64:
+      setGreen(p, 31)
+    if green > 63 and green < 128:
+      setGreen(p, 95)
+    if green > 127 and green < 192:
+      setGreen(p, 159)
+    if green > 191 and green < 256:
+      setGreen(p, 223)
+
+    #check and set blue values
+    if blue < 64:
+      setBlue(p, 31)
+    if blue > 63 and blue < 128:
+      setBlue(p, 95)
+    if blue > 127 and blue < 192:
+      setBlue(p, 159)
+    if blue > 191 and blue < 256:
+      setBlue(p, 223)
+
+
+  shortenedFilepath = filepath[:len(filepath)-4]
+  writePictureTo(jesPicture, shortenedFilepath + 'posterize.jpg')
+  
+  window.remove(picture)
+  
+  width = 800
+  if picture.getHeight() > picture.getWidth():
+    width = 500
+    
+  picture = Icon(shortenedFilepath + 'posterize.jpg', width)
+  window.add(picture, window.getWidth()/3, 100)
